@@ -9,6 +9,13 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;");
 }
 
+function encodeNonAscii(value) {
+  return value.replace(/[^\x00-\x7F]/gu, (char) => {
+    const codePoint = char.codePointAt(0);
+    return codePoint ? `&#${codePoint};` : "";
+  });
+}
+
 const rows = medicineStockItems
   .map((item) => {
     const statusClass =
@@ -66,5 +73,5 @@ const html = `<!doctype html>
 </body>
 </html>`;
 
-writeFileSync("index.html", html, "utf8");
+writeFileSync("index.html", encodeNonAscii(html), "utf8");
 writeFileSync(".nojekyll", "", "utf8");
